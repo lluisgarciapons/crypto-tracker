@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require('mongoose');
+const cors = require("cors");
 require('dotenv').config();
 const authRouter = require("./api/authRouter");
 const userRouter = require("./api/userRouter");
@@ -15,11 +16,12 @@ mongoose.connect(DB_URI, {
     useCreateIndex: true
 });
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/auth", authRouter);
-app.use("/user", checkToken, userRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/user", checkToken, userRouter);
 app.use('*', (req, res) => {
     res.sendStatus(404);
 });

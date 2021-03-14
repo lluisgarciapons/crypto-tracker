@@ -15,8 +15,8 @@ const createToken = (user, secret, expiresIn) => {
 authRouter.post(
     "/signup",
     asyncMiddleware(async (req, res, next) => {
-        const { username, email, password, passwordValidation } = req.body;
-        if (!username || !email || !password || !passwordValidation) {
+        const { email, password, passwordValidation } = req.body;
+        if (!email || !password || !passwordValidation) {
             return next({
                 status: 400,
                 message: "Please, fill in all required information."
@@ -28,18 +28,10 @@ authRouter.post(
                 message: "Passwords must be equal."
             });
         }
-        if (password < 6) {
+        if (password.length < 6) {
             return next({
                 status: 400,
                 message: "Password must be at least 6 characters long."
-            });
-        }
-
-        const userByName = await User.findOne({ username: username });
-        if (userByName) {
-            return next({
-                status: 403,
-                message: "This username already exists."
             });
         }
 
@@ -51,7 +43,6 @@ authRouter.post(
             });
         }
         const newUser = await new User({
-            username,
             email,
             password
         }).save();
@@ -66,14 +57,14 @@ authRouter.post(
 authRouter.post(
     "/login",
     asyncMiddleware(async (req, res, next) => {
-        const { username, password } = req.body;
-        if (!username || !password) {
+        const { email, password } = req.body;
+        if (!email || !password) {
             return next({
                 status: 400,
                 message: "Please, fill in all required information."
             });
         }
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ email });
 
         if (!user) {
             return next({
