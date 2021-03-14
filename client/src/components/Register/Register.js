@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { withRouter } from "react-router-dom";
 import "./Register.css";
-import { API_BASE_URL } from '../../constants/apiConstants';
+import { API_BASE_URL, ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
 import axios from "axios";
 function Register(props) {
     const [email, setEmail] = useState("");
@@ -35,6 +35,8 @@ function Register(props) {
             if (!response.data.success) {
                 return props.showError(response.data.message);
             }
+            props.setIsLogin(true);
+            localStorage.setItem(ACCESS_TOKEN_NAME, response.data.token);
             setSuccessMessage('Registration successful. Redirecting to home page..');
             redirectToHome();
             props.showError(null);
@@ -48,8 +50,8 @@ function Register(props) {
     };
 
     const redirectToHome = () => {
-        props.updateTitle('Home');
-        props.history.push('/home');
+        props.updateTitle('Crypto-tracker');
+        props.history.push('/');
     };
     const redirectToLogin = () => {
         props.updateTitle('Login');
