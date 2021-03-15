@@ -15,9 +15,18 @@ const UserSchema = new mongoose.Schema({
         min: [6, 'Password too short'],
     },
     crypto: [{
-        coin: { type: String },
+        coinId: {
+            type: Number,
+            required: true
+        },
+
+        symbol: {
+            type: String,
+            required: true
+        },
         quantity: {
             type: Number,
+            required: true,
             set: v => mongoose.Types.Decimal128.fromString(v.toFixed(8)),
         }
     }],

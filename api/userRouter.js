@@ -19,16 +19,16 @@ userRouter.route("/mycryptos")
 userRouter
     .route("/addCrypto")
     .put(asyncMiddleware(async (req, res, next) => {
-        const { user: { _id }, body: { coin, quantity } } = req;
+        const { user: { _id }, body: { coinId, symbol, quantity } } = req;
 
-        if (!coin || !quantity) {
+        if (!coinId || !symbol || !quantity) {
             return next({
                 status: 403,
                 message: "Please fill in all required information."
             });
         }
 
-        if (!isCoin(coin)) {
+        if (!isCoin(symbol)) {
             return next({
                 status: 403,
                 message: "This coin doesn't exist."
@@ -50,37 +50,37 @@ userRouter
 
 
         const alreadyOwned = user.crypto.find(item => {
-            return item.coin == coin;
+            return item.symbol == symbol;
         });
 
         if (alreadyOwned) {
             alreadyOwned.quantity += Number(quantity);
         }
         else {
-            user.crypto.push({ coin, quantity: Number(quantity) });
+            user.crypto.push({ coinId, symbol, quantity: Number(quantity) });
         }
 
         await user.save();
 
         res.send({
             success: true,
-            message: `${quantity} ${coin} added successfully.`
+            message: `${quantity} ${symbol} added successfully.`
         });
     }));
 
 userRouter
     .route("/subsCrypto")
     .put(asyncMiddleware(async (req, res, next) => {
-        const { user: { _id }, body: { coin, quantity } } = req;
+        const { user: { _id }, body: { coinId, symbol, quantity } } = req;
 
-        if (!coin || !quantity) {
+        if (!coinId || !symbol || !quantity) {
             return next({
                 status: 403,
                 message: "Please fill in all required information."
             });
         }
 
-        if (!isCoin(coin)) {
+        if (!isCoin(symbol)) {
             return next({
                 status: 403,
                 message: "This coin doesn't exist."
@@ -101,7 +101,7 @@ userRouter
         });
 
         const alreadyOwned = user.crypto.find(item => {
-            return item.coin == coin;
+            return item.symbol == symbol;
         });
 
         if (!alreadyOwned) {
@@ -125,15 +125,15 @@ userRouter
 
         res.send({
             success: true,
-            message: `${quantity} ${coin} substracted successfully.`
+            message: `${quantity} ${symbol} substracted successfully.`
         });
     }));
 
 userRouter
     .route("/eraseCrypto")
     .put(asyncMiddleware(async (req, res, next) => {
-        let { user: { _id }, body: { coin } } = req;
-        coin = coin.toUpperCase();
+        let { user: { _id }, body: { symbol } } = req;
+        let coin = symbol.toUpperCase();
         if (!coin) {
             return next({
                 status: 403,

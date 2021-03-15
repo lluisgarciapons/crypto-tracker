@@ -35,7 +35,8 @@ function AddCrypto(props) {
 
         props.showError(null);
         const payload = {
-            coin,
+            coinId: selectedCrypto.id,
+            symbol: selectedCrypto.symbol,
             quantity: totalAmount
         };
         try {

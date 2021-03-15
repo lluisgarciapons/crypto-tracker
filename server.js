@@ -14,6 +14,10 @@ mongoose.connect(DB_URI, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true
+}).then(() => {
+    console.log("Database connected");
+}).catch(err => {
+    console.log(err);
 });
 
 app.use(cors());
@@ -27,4 +31,18 @@ app.use('*', (req, res) => {
 });
 app.use(errorHandler);
 
+// Listen on a specific host via the HOST environment variable
+var host = process.env.HOST || '0.0.0.0';
+// Listen on a specific port via the PORT environment variable
+var port = 8080;
+
+var cors_proxy = require('cors-anywhere');
+cors_proxy.createServer({
+    originWhitelist: [], // Allow all origins
+    requireHeader: ['origin', 'x-requested-with'],
+    removeHeaders: ['cookie', 'cookie2']
+}).listen(port, host, function () {
+    console.log('Running CORS Anywhere on ' + host + ':' + port);
+});
 app.listen(PORT || 5000, () => console.log("Now listening for requests on port 5000"));
+

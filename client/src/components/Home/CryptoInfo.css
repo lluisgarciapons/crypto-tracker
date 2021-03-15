@@ -1,0 +1,44 @@
+.total-prices {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8em;
+}
+
+.crypto-parent{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid gray;
+    margin-bottom: 10px;
+}
+
+.crypto-parent div {
+    height: 100%;
+}
+
+.crypto-img{
+    width: 20%;
+}
+
+.crypto-info {
+    flex-grow: 1;
+}
+
+.crypto-info-title {
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+
+.crypto-info-prices {
+    font-size: 0.6em;
+    margin: 0;
+    padding: 0;
+}
+
+.crypto-pct{
+    width: 30%;
+    text-align: right;
+    font-size: 1.5em;
+}
