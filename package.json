@@ -25,5 +25,8 @@
   },
   "devDependencies": {
     "cors-anywhere": "^0.4.3"
+  },
+  "engines": {
+    "node": "12.14.0"
   }
 }
