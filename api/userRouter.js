@@ -16,57 +16,57 @@ userRouter.route("/mycryptos")
         res.send(user);
     }));
 
-userRouter
-    .route("/addCrypto")
-    .put(asyncMiddleware(async (req, res, next) => {
-        const { user: { _id }, body: { coinId, symbol, quantity } } = req;
+// userRouter
+//     .route("/addCrypto")
+//     .put(asyncMiddleware(async (req, res, next) => {
+//         const { user: { _id }, body: { coinId, symbol, quantity } } = req;
 
-        if (!coinId || !symbol || !quantity) {
-            return next({
-                status: 403,
-                message: "Please fill in all required information."
-            });
-        }
+//         if (!coinId || !symbol || !quantity) {
+//             return next({
+//                 status: 403,
+//                 message: "Please fill in all required information."
+//             });
+//         }
 
-        if (!isCoin(symbol)) {
-            return next({
-                status: 403,
-                message: "This coin doesn't exist."
-            });
-        }
+//         if (!isCoin(symbol)) {
+//             return next({
+//                 status: 403,
+//                 message: "This coin doesn't exist."
+//             });
+//         }
 
-        if (quantity <= 0) {
-            return next({
-                status: 403,
-                message: "Quantity must be a valid number."
-            });
-        }
+//         if (quantity <= 0) {
+//             return next({
+//                 status: 403,
+//                 message: "Quantity must be a valid number."
+//             });
+//         }
 
-        const user = await User.findById(_id).select("-password");
-        if (!user) return next({
-            status: 404,
-            message: "User not found"
-        });
+//         const user = await User.findById(_id).select("-password");
+//         if (!user) return next({
+//             status: 404,
+//             message: "User not found"
+//         });
 
 
-        const alreadyOwned = user.crypto.find(item => {
-            return item.symbol == symbol;
-        });
+//         const alreadyOwned = user.crypto.find(item => {
+//             return item.symbol == symbol;
+//         });
 
-        if (alreadyOwned) {
-            alreadyOwned.quantity += Number(quantity);
-        }
-        else {
-            user.crypto.push({ coinId, symbol, quantity: Number(quantity) });
-        }
+//         if (alreadyOwned) {
+//             alreadyOwned.quantity += Number(quantity);
+//         }
+//         else {
+//             user.crypto.push({ coinId, symbol, quantity: Number(quantity) });
+//         }
 
-        await user.save();
+//         await user.save();
 
-        res.send({
-            success: true,
-            message: `${quantity} ${symbol} added successfully.`
-        });
-    }));
+//         res.send({
+//             success: true,
+//             message: `${quantity} ${symbol} added successfully.`
+//         });
+//     }));
 
 userRouter
     .route("/subsCrypto")

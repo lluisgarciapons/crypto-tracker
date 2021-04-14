@@ -19,7 +19,6 @@ const UserSchema = new mongoose.Schema({
             type: Number,
             required: true
         },
-
         symbol: {
             type: String,
             required: true
@@ -29,6 +28,10 @@ const UserSchema = new mongoose.Schema({
             required: true,
             set: v => mongoose.Types.Decimal128.fromString(v.toFixed(8)),
         }
+    }],
+    sites: [{
+        type: mongoose.Types.ObjectId,
+        ref: "Site"
     }],
     joinDate: {
         type: Date,

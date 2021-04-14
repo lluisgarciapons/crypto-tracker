@@ -4,6 +4,7 @@ const cors = require("cors");
 require('dotenv').config();
 const authRouter = require("./api/authRouter");
 const userRouter = require("./api/userRouter");
+const siteRouter = require("./api/siteRouter");
 const { checkToken, errorHandler } = require("./middleware");
 const path = require("path");
 const fetch = require("node-fetch");
@@ -15,7 +16,8 @@ const { env: { PORT, DB_URI } } = process;
 mongoose.connect(DB_URI, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
-    useCreateIndex: true
+    useCreateIndex: true,
+    useFindAndModify: false
 }).then(() => {
     console.log("Database connected");
 }).catch(err => {
@@ -34,6 +36,7 @@ app.post("/api/getData", (req, res) => {
 });
 app.use("/api/auth", authRouter);
 app.use("/api/user", checkToken, userRouter);
+app.use("/api/site", checkToken, siteRouter);
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
