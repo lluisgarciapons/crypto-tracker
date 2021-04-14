@@ -46,7 +46,6 @@ authRouter.post(
             email,
             password
         }).save();
-        console.log(newUser);
         res.status(201).send({
             success: true,
             token: createToken(newUser, JWT_SECRET, "24h")
@@ -99,7 +98,6 @@ authRouter.get(
                 message: "User not found."
             });
         }
-        console.log(user);
         res.status(200).json({
             success: true,
             user

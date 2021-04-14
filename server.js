@@ -30,33 +30,17 @@ app.use(express.static(path.join(__dirname, "client", "build")));
 app.post("/api/getData", (req, res) => {
     fetch(req.body.url, { headers: req.body.headers })
         .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            return res.send(data);
-        });
+        .then(data => res.send(data));
 });
 app.use("/api/auth", authRouter);
 app.use("/api/user", checkToken, userRouter);
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
-// app.use('*', (req, res) => {
-//     res.sendStatus(404);
-// });
+app.use('*', (req, res) => {
+    res.sendStatus(404);
+});
 app.use(errorHandler);
 
-// Listen on a specific host via the HOST environment variable
-// var host = process.env.HOST || '0.0.0.0';
-// Listen on a specific port via the PORT environment variable
-// var port = 8080;
-
-// var cors_proxy = require('cors-anywhere');
-// cors_proxy.createServer({
-//     originWhitelist: [], // Allow all origins
-//     requireHeader: ['origin', 'x-requested-with'],
-//     removeHeaders: ['cookie', 'cookie2']
-// }).listen(port, host, function () {
-//     console.log('Running CORS Anywhere on ' + host + ':' + port);
-// });
 app.listen(PORT || 5000, () => console.log(`Now listening for requests on port ${PORT}`));
 

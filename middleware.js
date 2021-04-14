@@ -21,14 +21,12 @@ let checkToken = (req, res, next) => {
       });
     } else {
       req.user = decoded;
-      // console.log(decoded);
       next();
     }
   });
 };
 
 errorHandler = function (err, req, res, next) {
-  // console.error(err.stack);
   console.error(err);
   res.status(err.status || 400).send({
     success: false,
