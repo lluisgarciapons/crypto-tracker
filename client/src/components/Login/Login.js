@@ -3,6 +3,7 @@ import axios from 'axios';
 import './Login.css';
 import { API_BASE_URL, ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
 import { withRouter } from "react-router-dom";
+import setAuthToken from '../../utils/setAuthToken';
 
 function LoginForm(props) {
     const [email, setEmail] = useState("");
@@ -26,6 +27,7 @@ function LoginForm(props) {
             if (!response.data.success) {
                 return props.showError(response.data.message);
             }
+            setAuthToken(response.data.token);
             props.setIsLogin(true);
             localStorage.setItem(ACCESS_TOKEN_NAME, response.data.token);
             setSuccessMessage('Registration successful. Redirecting to home page..');

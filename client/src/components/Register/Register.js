@@ -3,6 +3,9 @@ import { withRouter } from "react-router-dom";
 import "./Register.css";
 import { API_BASE_URL, ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
 import axios from "axios";
+import setAuthToken from '../../utils/setAuthToken';
+
+
 function Register(props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -36,6 +39,7 @@ function Register(props) {
                 return props.showError(response.data.message);
             }
             props.setIsLogin(true);
+            setAuthToken(response.data.token);
             localStorage.setItem(ACCESS_TOKEN_NAME, response.data.token);
             setSuccessMessage('Registration successful. Redirecting to home page..');
             redirectToHome();
