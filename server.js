@@ -5,6 +5,7 @@ require('dotenv').config();
 const authRouter = require("./api/authRouter");
 const userRouter = require("./api/userRouter");
 const { checkToken, errorHandler } = require("./middleware");
+const path = require("path");
 
 const app = express();
 
@@ -23,12 +24,16 @@ mongoose.connect(DB_URI, {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "client", "build")));
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", checkToken, userRouter);
-app.use('*', (req, res) => {
-    res.sendStatus(404);
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
+// app.use('*', (req, res) => {
+//     res.sendStatus(404);
+// });
 app.use(errorHandler);
 
 // Listen on a specific host via the HOST environment variable
