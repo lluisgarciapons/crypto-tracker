@@ -77,8 +77,14 @@ function AddCrypto(props) {
     const findCrypto = async () => {
         setLoading(true);
         try {
-            const cryptoInfo = await axios.get(`http://localhost:8080/https://pro-api.coinmarketcap.com/v1/cryptocurrency/info?symbol=${coin}`, {
-                headers: {
+            // const cryptoInfo = await axios.get(`http://localhost:8080/https://pro-api.coinmarketcap.com/v1/cryptocurrency/info?symbol=${coin}`, {
+            //     headers: {
+            //         "X-CMC_PRO_API_KEY": "e805b285-aca8-4d11-835b-0927388a6a0f"
+            //     }
+            // });
+
+            const cryptoInfo = await axios.post(`${API_BASE_URL}/getData`, {
+                url: `https://pro-api.coinmarketcap.com/v1/cryptocurrency/info?symbol=${coin}`, headers: {
                     "X-CMC_PRO_API_KEY": "e805b285-aca8-4d11-835b-0927388a6a0f"
                 }
             });

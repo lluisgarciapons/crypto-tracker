@@ -6,6 +6,7 @@ const authRouter = require("./api/authRouter");
 const userRouter = require("./api/userRouter");
 const { checkToken, errorHandler } = require("./middleware");
 const path = require("path");
+const fetch = require("node-fetch");
 
 const app = express();
 
@@ -26,6 +27,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "client", "build")));
 
+app.post("/api/getData", (req, res) => {
+    fetch(req.body.url, { headers: req.body.headers })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            return res.send(data);
+        });
+});
 app.use("/api/auth", authRouter);
 app.use("/api/user", checkToken, userRouter);
 app.get("*", (req, res) => {
@@ -37,17 +46,17 @@ app.get("*", (req, res) => {
 app.use(errorHandler);
 
 // Listen on a specific host via the HOST environment variable
-var host = process.env.HOST || '0.0.0.0';
+// var host = process.env.HOST || '0.0.0.0';
 // Listen on a specific port via the PORT environment variable
-var port = PORT || 8080;
+// var port = 8080;
 
-var cors_proxy = require('cors-anywhere');
-cors_proxy.createServer({
-    originWhitelist: [], // Allow all origins
-    requireHeader: ['origin', 'x-requested-with'],
-    removeHeaders: ['cookie', 'cookie2']
-}).listen(port, host, function () {
-    console.log('Running CORS Anywhere on ' + host + ':' + port);
-});
+// var cors_proxy = require('cors-anywhere');
+// cors_proxy.createServer({
+//     originWhitelist: [], // Allow all origins
+//     requireHeader: ['origin', 'x-requested-with'],
+//     removeHeaders: ['cookie', 'cookie2']
+// }).listen(port, host, function () {
+//     console.log('Running CORS Anywhere on ' + host + ':' + port);
+// });
 app.listen(PORT || 5000, () => console.log(`Now listening for requests on port ${PORT}`));
 
