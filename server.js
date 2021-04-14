@@ -39,7 +39,7 @@ app.use(errorHandler);
 // Listen on a specific host via the HOST environment variable
 var host = process.env.HOST || '0.0.0.0';
 // Listen on a specific port via the PORT environment variable
-var port = 8080;
+var port = PORT || 8080;
 
 var cors_proxy = require('cors-anywhere');
 cors_proxy.createServer({
@@ -49,5 +49,5 @@ cors_proxy.createServer({
 }).listen(port, host, function () {
     console.log('Running CORS Anywhere on ' + host + ':' + port);
 });
-app.listen(PORT || 5000, () => console.log("Now listening for requests on port 5000"));
+app.listen(PORT || 5000, () => console.log(`Now listening for requests on port ${PORT}`));
 
