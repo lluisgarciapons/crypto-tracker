@@ -1,5 +1,5 @@
 const express = require("express");
-const { asyncMiddleware } = require("../middleware");
+const { asyncMiddleware, mySite } = require("../middleware");
 const Site = require("../models/Site");
 const User = require("../models/User");
 const { isCoin } = require("../utils/validations");
@@ -81,8 +81,61 @@ siteRouter
     }));
 
 siteRouter
+    .route("/find/:siteId")
+    .get(mySite, asyncMiddleware(async (req, res, next) => {
+        const { params: { siteId } } = req;
+
+        let site = await Site.findById(siteId);
+
+        if (!site) {
+            return next({
+                status: 404,
+                message: "This site does not exist."
+            });
+        }
+
+        return res.send({
+            success: true,
+            site
+        });
+    }));
+
+siteRouter
+    .route("/findByCoin/:coinId")
+    .get(asyncMiddleware(async (req, res, next) => {
+        const { user: { _id }, params: { coinId } } = req;
+
+        const user = await User.findById(_id).populate("sites");
+
+        let filteredSites = user.sites.filter(site => {
+            let found = false;
+            site.crypto.every(cryp => {
+                if (cryp.coinId == coinId) {
+                    found = true;
+                    return false;
+                }
+                return true;
+            });
+            return found;
+        });
+
+        if (filteredSites.length == 0) {
+            return next({
+                status: 403,
+                message: "You don't have this coin in any site."
+            });
+        }
+
+        return res.send({
+            success: true,
+            sites: filteredSites
+        });
+
+    }));
+
+siteRouter
     .route("/modifySite/:siteId")
-    .put(asyncMiddleware(async (req, res, next) => {
+    .put(mySite, asyncMiddleware(async (req, res, next) => {
         const { user: { _id }, params: { siteId } } = req;
         const site = req.body;
         if (!site || !site.crypto) {
@@ -126,7 +179,7 @@ siteRouter
 
 siteRouter
     .route("/deleteSite/:siteId")
-    .delete(asyncMiddleware(async (req, res, next) => {
+    .delete(mySite, asyncMiddleware(async (req, res, next) => {
         const { user: { _id }, params: { siteId } } = req;
 
         let site = await Site.findById(siteId);
@@ -161,7 +214,7 @@ siteRouter
 
 siteRouter
     .route("/deleteCoin/:siteId")
-    .delete(asyncMiddleware(async (req, res, next) => {
+    .delete(mySite, asyncMiddleware(async (req, res, next) => {
         const { user: { _id }, params: { siteId } } = req;
         const coinId = req.query.q;
 

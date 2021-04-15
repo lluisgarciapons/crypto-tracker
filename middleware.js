@@ -1,4 +1,5 @@
 let jwt = require("jsonwebtoken");
+const User = require("./models/User");
 
 let checkToken = (req, res, next) => {
   let token = req.headers["x-access-token"] || req.headers["authorization"]; // Express headers are auto converted to lowercase
@@ -26,7 +27,24 @@ let checkToken = (req, res, next) => {
   });
 };
 
-errorHandler = function (err, req, res, next) {
+let mySite = async (req, res, next) => {
+  const { user: { _id }, params: { siteId } } = req;
+
+  let user = await User.findById(_id);
+
+  let index = user.sites.indexOf(siteId);
+
+  if (index < 0) {
+    return res.status(401).json({
+      success: false,
+      message: "You don't own this site."
+    });
+  }
+
+  next();
+};
+
+const errorHandler = (err, req, res, next) => {
   console.error(err);
   res.status(err.status || 400).send({
     success: false,
@@ -41,5 +59,6 @@ const asyncMiddleware = fn => (req, res, next) => {
 module.exports = {
   checkToken,
   errorHandler,
-  asyncMiddleware
+  asyncMiddleware,
+  mySite
 };
