@@ -98,7 +98,7 @@ authRouter.get(
                 message: "User not found."
             });
         }
-        res.status(200).json({
+        res.send({
             success: true,
             user
         });

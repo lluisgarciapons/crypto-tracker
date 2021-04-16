@@ -9,9 +9,9 @@ import { API_BASE_URL } from "./constants/apiConstants";
 import setAuthToken from "./utils/setAuthToken";
 import AlertComponent from './components/AlertComponent/AlertComponent';
 import {
-  BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  useHistory
 } from "react-router-dom";
 import PrivateRoute from "./utils/PrivateRoute";
 import axios from "axios";
@@ -20,35 +20,48 @@ function App() {
   const [title, updateTitle] = useState(null);
   const [errorMessage, updateErrorMessage] = useState(null);
   const [isLogin, setIsLogin] = useState(false);
+  const [checking, setChecking] = useState(false);
+  let history = useHistory();
+  console.log(history);
 
   useEffect(() => {
+    const autoLogin = async (token) => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/auth/currentUser`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setIsLogin(true);
+        setAuthToken(localStorage.getItem("jwt_token"));
+        setChecking(false);
+      }
+      catch (err) {
+        setIsLogin(false);
+        localStorage.removeItem("jwt_token");
+        setAuthToken();
+        setChecking(false);
+        history.push("/login");
+      }
+    };
+
     if (localStorage.getItem("jwt_token")) {
+      setChecking(true);
       console.log("checking for user");
       autoLogin(localStorage.getItem("jwt_token"));
     }
-  }, []);
 
-  const autoLogin = async (token) => {
-    const response = await axios.get(`${API_BASE_URL}/auth/currentUser`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
 
-    if (!response.data.success) {
-      setIsLogin(false);
-      localStorage.removeItem("jwt_token");
-      setAuthToken();
-      return;
-    }
-    setIsLogin(true);
-    setAuthToken(localStorage.getItem("jwt_token"));
-  };
+
+
+  }, [history]);
+
+
 
 
   return (
-    <Router>
-      <div className="App">
+    <div className="App">
+      {!checking && <>
         <Header title={title} isLogin={isLogin} setIsLogin={setIsLogin} />
         <div className="container d-flex align-items-center flex-column">
           <Switch>
@@ -67,8 +80,8 @@ function App() {
           </Switch>
           <AlertComponent errorMessage={errorMessage} hideError={updateErrorMessage} />
         </div>
-      </div>
-    </Router>
+      </>}
+    </div>
   );
 }
 
