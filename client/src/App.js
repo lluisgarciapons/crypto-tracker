@@ -20,14 +20,13 @@ function App() {
   const [title, updateTitle] = useState(null);
   const [errorMessage, updateErrorMessage] = useState(null);
   const [isLogin, setIsLogin] = useState(false);
-  const [checking, setChecking] = useState(false);
+  const [checking, setChecking] = useState(true);
   let history = useHistory();
-  console.log(history);
 
   useEffect(() => {
     const autoLogin = async (token) => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/auth/currentUser`, {
+        await axios.get(`${API_BASE_URL}/auth/currentUser`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -46,12 +45,11 @@ function App() {
     };
 
     if (localStorage.getItem("jwt_token")) {
-      setChecking(true);
       console.log("checking for user");
       autoLogin(localStorage.getItem("jwt_token"));
+    } else {
+      setChecking(false);
     }
-
-
 
 
   }, [history]);

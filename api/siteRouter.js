@@ -81,6 +81,25 @@ siteRouter
     }));
 
 siteRouter
+    .route("/mySites")
+    .get(asyncMiddleware(async (req, res, next) => {
+        const { user: { _id } } = req;
+        const user = await User.findById(_id).populate("sites", "name");
+
+        if (!user) {
+            return next({
+                status: 404,
+                message: "Your user does not exist"
+            });
+        }
+
+        return res.send({
+            success: true,
+            sites: user.sites.map(site => site.name)
+        });
+    }));
+
+siteRouter
     .route("/find/:siteId")
     .get(mySite, asyncMiddleware(async (req, res, next) => {
         const { params: { siteId } } = req;

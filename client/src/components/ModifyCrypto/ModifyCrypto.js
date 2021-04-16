@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../../constants/apiConstants';
 import { withRouter } from "react-router-dom";
@@ -8,39 +8,58 @@ function AddCrypto(props) {
     const [selectedCrypto, setSelectedCrypto] = useState({
         id: null,
         symbol: null,
-        logo: null
+        logo: null,
+        amount: "",
+        siteName: ""
     });
-    const [amount, setAmount] = useState({
-        amount1: "",
-        amount2: "",
-        amount3: "",
-        amount4: ""
-    });
+    const [mySites, setMySites] = useState([]);
+    const [newSite, setNewSite] = useState(true);
     const [loading, setLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState(null);
 
-    const sum = (obj) => {
-        return Object.keys(obj).reduce((sum, key) => sum + parseFloat(obj[key] || 0), 0);
+    // const sum = (obj) => {
+    //     return Object.keys(obj).reduce((sum, key) => sum + parseFloat(obj[key] || 0), 0);
+    // };
+
+    useEffect(() => {
+        axios.get(`${API_BASE_URL}/site/mySites`)
+            .then(response => {
+                setMySites(response.data.sites);
+            });
+    }, []);
+
+    const handleSelectChange = (e) => {
+        e.preventDefault();
+        const value = e.target.value;
+
+        if (value == "new") {
+            setNewSite(true);
+            setSelectedCrypto(crypto => ({
+                ...crypto,
+                siteName: ""
+            }));
+        } else {
+            setNewSite(false);
+            setSelectedCrypto(crypto => ({
+                ...crypto,
+                siteName: value
+            }));
+        }
     };
 
-    const handleSubmitClick = async (e, action) => {
+    const handleSubmitClick = async (e) => {
         e.preventDefault();
         setSuccessMessage(null);
-
-        let actionEndpoint;
-        if (action === "add") actionEndpoint = "addCrypto";
-        if (action === "subst") actionEndpoint = "subsCrypto";
-
-        let totalAmount = sum(amount);
 
         props.showError(null);
         const payload = {
             coinId: selectedCrypto.id,
             symbol: selectedCrypto.symbol,
-            quantity: totalAmount
+            quantity: selectedCrypto.amount,
+            name: selectedCrypto.siteName
         };
         try {
-            const response = await axios.put(`${API_BASE_URL}/user/${actionEndpoint}`, payload);
+            const response = await axios.put(`${API_BASE_URL}/site/addCrypto`, payload);
             console.log(response);
             if (!response.data.success) {
                 return props.showError(response.data.message);
@@ -61,16 +80,13 @@ function AddCrypto(props) {
         props.showError(null);
         setSuccessMessage(null);
         setCoin("");
+        setNewSite(true);
         setSelectedCrypto({
             id: null,
             symbol: null,
-            logo: null
-        });
-        setAmount({
-            amount1: "",
-            amount2: "",
-            amount3: "",
-            amount4: ""
+            logo: null,
+            siteName: "",
+            amount: ""
         });
     };
 
@@ -97,7 +113,12 @@ function AddCrypto(props) {
                 };
             })[0];
             setLoading(false);
-            setSelectedCrypto(info);
+            setSelectedCrypto(crypto => ({
+                ...crypto,
+                id: info.id,
+                symbol: info.symbol,
+                logo: info.logo
+            }));
             setCoin(info.symbol);
         }
         catch (err) {
@@ -113,59 +134,43 @@ function AddCrypto(props) {
     };
 
     const amountInputs = () => {
-        return (
-            <>
-                <div className="form-group text-left">
-                    <label htmlFor="site1">Amount</label>
-                    <input type="text"
-                        className="form-control"
-                        id="site1"
-                        value={amount.amount1}
-                        placeholder="Site 1 amount"
-                        onChange={(e) => setAmount(prevAmount => ({
-                            ...prevAmount,
-                            amount1: e.target.value
-                        }))}
-                    />
-                </div>
-                {amount.amount1 ? <div className="form-group text-left">
-                    <input type="text"
-                        className="form-control"
-                        id="site2"
-                        placeholder="Site 2 amount"
-                        value={amount.amount2}
-                        onChange={(e) => setAmount(prevAmount => ({
-                            ...prevAmount,
-                            amount2: e.target.value
-                        }))}
-                    />
-                </div> : ""}
-                {amount.amount2 ? <div className="form-group text-left">
-                    <input type="text"
-                        className="form-control"
-                        id="site3"
-                        placeholder="Site 3 amount"
-                        value={amount.amount3}
-                        onChange={(e) => setAmount(prevAmount => ({
-                            ...prevAmount,
-                            amount3: e.target.value
-                        }))}
-                    />
-                </div> : ""}
-                {amount.amount3 ? <div className="form-group text-left">
-                    <input type="text"
-                        className="form-control"
-                        id="site4"
-                        placeholder="Site 4 amount"
-                        value={amount.amount4}
-                        onChange={(e) => setAmount(prevAmount => ({
-                            ...prevAmount,
-                            amount4: e.target.value
-                        }))}
-                    />
-                </div> : ""}
-
-            </>
+        return (<>
+            <div className="form-group text-left">
+                <label htmlFor="mySites">My sites</label>
+                <select id="mySites" className="form-select" defaultValue="new" onChange={(e) => handleSelectChange(e)}>
+                    <option value="new">New Site</option>
+                    {mySites.map(site => {
+                        return (<option key={site}>{site}</option>);
+                    })}
+                </select>
+            </div>
+            {newSite && <div className="form-group text-left">
+                <label htmlFor="newSite">Site</label>
+                <input type="text"
+                    className="form-control"
+                    id="newSite"
+                    value={selectedCrypto.siteName}
+                    placeholder="New site name"
+                    onChange={(e) => setSelectedCrypto(crypto => ({
+                        ...crypto,
+                        siteName: e.target.value
+                    }))}
+                />
+            </div>}
+            <div className="form-group text-left">
+                <label htmlFor="site1">Amount</label>
+                <input type="text"
+                    className="form-control"
+                    id="site1"
+                    value={selectedCrypto.amount}
+                    placeholder="Site amount"
+                    onChange={(e) => setSelectedCrypto(crypto => ({
+                        ...crypto,
+                        amount: e.target.value
+                    }))}
+                />
+            </div>
+        </>
         );
     };
 
@@ -177,11 +182,6 @@ function AddCrypto(props) {
                     className="btn btn-primary mr-3"
                     onClick={(e) => handleSubmitClick(e, "add")}
                 >Add</button>
-                <button
-                    type="submit"
-                    className="btn btn-danger mr-3"
-                    onClick={(e) => handleSubmitClick(e, "subst")}
-                >Subst.</button>
                 <button
                     type="reset"
                     className="btn btn-light mr-3"
