@@ -43,7 +43,7 @@ function LoginForm(props) {
     };
 
     const redirectToHome = () => {
-        props.updateTitle('Crypto-tracker');
+        props.updateTitle('Wallet');
         props.history.push('/');
     };
     const redirectToRegister = () => {

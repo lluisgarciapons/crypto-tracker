@@ -32,7 +32,7 @@ function AddCrypto(props) {
         e.preventDefault();
         const value = e.target.value;
 
-        if (value == "new") {
+        if (value === "new") {
             setNewSite(true);
             setSelectedCrypto(crypto => ({
                 ...crypto,
@@ -129,7 +129,7 @@ function AddCrypto(props) {
     };
 
     const redirectToHome = () => {
-        props.updateTitle('Crypto-tracker');
+        props.updateTitle('Wallet');
         props.history.push('/');
     };
 

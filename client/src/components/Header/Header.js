@@ -22,7 +22,7 @@ function Header(props) {
     return (
         <nav className="navbar navbar-dark bg-primary">
             <div className="col-12 d-flex justify-content-center text-white">
-                <span className="h3">{props.title || title || "Crypto-tracker"}</span>
+                <span className="h3">{props.title || title || "Wallet"}</span>
                 {props.isLogin ? <button className="btn btn-light logout-button" onClick={logout}>logout</button> : ""}
             </div>
         </nav>

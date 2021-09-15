@@ -16,11 +16,12 @@ siteRouter
                 message: "Please fill in all required information."
             });
         }
+        const { isValid, error } = await isCoin(symbol);
 
-        if (!isCoin(symbol)) {
+        if (!isValid) {
             return next({
                 status: 403,
-                message: "This coin doesn't exist."
+                message: error
             });
         }
 
@@ -144,6 +145,10 @@ siteRouter
                 message: "You don't have this coin in any site."
             });
         }
+
+        filteredSites.forEach(eachSite => {
+            eachSite.crypto = eachSite.crypto.filter(coin => coin.coinId == coinId);
+        });
 
         return res.send({
             success: true,

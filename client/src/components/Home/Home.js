@@ -89,8 +89,8 @@ function Home(props) {
     }, [cryptos]);
 
     const redirectToAddCrypto = () => {
-        props.updateTitle('Modify Crypto');
-        props.history.push('/ModifyCrypto');
+        props.updateTitle('Add Crypto');
+        props.history.push('/addCrypto');
     };
 
     const content = (
@@ -103,7 +103,7 @@ function Home(props) {
     return (
         <div className="card col-12 col-lg-4 login-card mt-2 hv-center">
             <div className="mt-2 text-center">
-                <span className="loginText" onClick={() => redirectToAddCrypto()}>Modify Crypto</span>
+                <span className="loginText" onClick={() => redirectToAddCrypto()}>Add Crypto</span>
             </div>
             {!isLoading ? content : "Loading..."}
         </div>

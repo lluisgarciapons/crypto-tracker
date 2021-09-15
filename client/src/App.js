@@ -4,7 +4,7 @@ import Login from "./components/Login/Login";
 import Register from './components/Register/Register';
 import Header from './components/Header/Header';
 import Home from "./components/Home/Home";
-import ModifyCrypto from "./components/ModifyCrypto/ModifyCrypto";
+import ModifyCrypto from "./components/AddCrypto/AddCrypto";
 import { API_BASE_URL } from "./constants/apiConstants";
 import setAuthToken from "./utils/setAuthToken";
 import AlertComponent from './components/AlertComponent/AlertComponent';
@@ -72,8 +72,11 @@ function App() {
             <Route path="/login">
               <Login showError={updateErrorMessage} updateTitle={updateTitle} setIsLogin={setIsLogin} />
             </Route>
-            <PrivateRoute path="/modifyCrypto">
+            <PrivateRoute path="/addCrypto">
               <ModifyCrypto showError={updateErrorMessage} updateTitle={updateTitle} setIsLogin={setIsLogin} />
+            </PrivateRoute>
+            <PrivateRoute path="/site/:siteId">
+              <Site showError={updateErrorMessage} updateTitle={updateTitle} setIsLogin={setIsLogin} />
             </PrivateRoute>
           </Switch>
           <AlertComponent errorMessage={errorMessage} hideError={updateErrorMessage} />
