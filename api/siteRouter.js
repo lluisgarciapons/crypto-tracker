@@ -96,7 +96,9 @@ siteRouter
 
         return res.send({
             success: true,
-            sites: user.sites.map(site => site.name)
+            sites: user.sites.map(site => {
+                return { name: site.name, id: site._id };
+            })
         });
     }));
 

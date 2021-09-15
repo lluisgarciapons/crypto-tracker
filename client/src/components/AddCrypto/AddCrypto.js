@@ -140,7 +140,7 @@ function AddCrypto(props) {
                 <select id="mySites" className="form-select" defaultValue="new" onChange={(e) => handleSelectChange(e)}>
                     <option value="new">New Site</option>
                     {mySites.map(site => {
-                        return (<option key={site}>{site}</option>);
+                        return (<option key={site.id}>{site.name}</option>);
                     })}
                 </select>
             </div>

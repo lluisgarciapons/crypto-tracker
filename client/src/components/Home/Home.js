@@ -93,6 +93,11 @@ function Home(props) {
         props.history.push('/addCrypto');
     };
 
+    const redirectToMySites = () => {
+        props.updateTitle('My Sites');
+        props.history.push('/MySites');
+    };
+
     const content = (
         <>
             <DoughnutChart info={cryptos} />
@@ -104,6 +109,9 @@ function Home(props) {
         <div className="card col-12 col-lg-4 login-card mt-2 hv-center">
             <div className="mt-2 text-center">
                 <span className="loginText" onClick={() => redirectToAddCrypto()}>Add Crypto</span>
+            </div>
+            <div className="mt-2 text-center">
+                <span className="loginText" onClick={() => redirectToMySites()}>MySites</span>
             </div>
             {!isLoading ? content : "Loading..."}
         </div>

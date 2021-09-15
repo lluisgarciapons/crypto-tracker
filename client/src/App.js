@@ -8,6 +8,8 @@ import ModifyCrypto from "./components/AddCrypto/AddCrypto";
 import { API_BASE_URL } from "./constants/apiConstants";
 import setAuthToken from "./utils/setAuthToken";
 import AlertComponent from './components/AlertComponent/AlertComponent';
+import MySites from "./components/MySites/MySites";
+import Site from "./components/Site/Site";
 import {
   Switch,
   Route,
@@ -74,6 +76,9 @@ function App() {
             </Route>
             <PrivateRoute path="/addCrypto">
               <ModifyCrypto showError={updateErrorMessage} updateTitle={updateTitle} setIsLogin={setIsLogin} />
+            </PrivateRoute>
+            <PrivateRoute path="/mySites">
+              <MySites showError={updateErrorMessage} updateTitle={updateTitle} setIsLogin={setIsLogin} />
             </PrivateRoute>
             <PrivateRoute path="/site/:siteId">
               <Site showError={updateErrorMessage} updateTitle={updateTitle} setIsLogin={setIsLogin} />
