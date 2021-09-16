@@ -280,6 +280,7 @@ siteRouter
 
         return res.send({
             success: true,
+            site,
             message: `${foundCoin.symbol} deleted from ${site.name}.`
         });
     }));

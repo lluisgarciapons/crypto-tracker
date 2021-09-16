@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 // import { API_BASE_URL } from "../../constants/apiConstants";
 
 
@@ -45,7 +45,7 @@ function MySites(props) {
                     }</>)
                 : "Loading..."}
             <div className="mt-2">
-                <span className="loginText" onClick={() => redirectToHome()}>Back to Home</span>
+                <button type="button" className="btn btn-primary" onClick={() => redirectToHome()}>Home</button>
             </div>
         </div>
 

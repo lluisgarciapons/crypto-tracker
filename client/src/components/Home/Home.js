@@ -5,7 +5,7 @@ import { API_BASE_URL } from '../../constants/apiConstants';
 import DoughnutChart from '../Charts/Doughnut';
 import CryptoInfo from "./CryptoInfo";
 function Home(props) {
-    const [cryptos, setCryptos] = useState([]);
+    const [cryptos, setCryptos] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -83,9 +83,16 @@ function Home(props) {
             orderCryptos();
             setIsLoading(false);
         };
-        if (cryptos.length > 0 && !cryptos[0].btcPrice) {
-            getQuotes();
+        if (cryptos) {
+            if (cryptos.length > 0 && !cryptos[0].btcPrice) {
+                getQuotes();
+            } else {
+                setIsLoading(false);
+            }
         }
+        // if (cryptos && cryptos.length > 0 && !cryptos[0].btcPrice) {
+        //     getQuotes();
+        // }
     }, [cryptos]);
 
     const redirectToAddCrypto = () => {
@@ -107,13 +114,14 @@ function Home(props) {
 
     return (
         <div className="card col-12 col-lg-4 login-card mt-2 hv-center">
-            <div className="mt-2 text-center">
-                <span className="loginText" onClick={() => redirectToAddCrypto()}>Add Crypto</span>
+            <div className="mt-2 d-flex justify-content-around">
+                <button type="button" className="btn btn-primary" onClick={() => redirectToAddCrypto()}>Add Crypto</button>
+                <button type="button" className="btn btn-primary" onClick={() => redirectToMySites()}>My sites</button>
             </div>
-            <div className="mt-2 text-center">
-                <span className="loginText" onClick={() => redirectToMySites()}>MySites</span>
-            </div>
-            {!isLoading ? content : "Loading..."}
+            {!isLoading ? cryptos.length === 0 ?
+                <div className="alert alert-warning mt-2" role="alert">
+                    Start adding some crypto <span className="loginText" onClick={redirectToAddCrypto}>here</span>
+                </div> : content : "Loading..."}
         </div>
     );
 }

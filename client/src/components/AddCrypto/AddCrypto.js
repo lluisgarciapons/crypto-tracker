@@ -233,7 +233,7 @@ function AddCrypto(props) {
                 {successMessage}
             </div>
             <div className="mt-2">
-                <span className="loginText" onClick={() => redirectToHome()}>Back to Home</span>
+                <button type="button" className="btn btn-primary" onClick={() => redirectToHome()}>Home</button>
             </div>
         </div>
     );
